@@ -130,5 +130,40 @@ public class User implements Serializable {
 		return "User [id=" + id + ", username=" + username + ", password=" + password + ", firstName=" + firstName
 				+ ", lastName=" + lastName + ", userType=" + userType + ", accounts=" + accounts + "]";
 	}
+	public User(Integer id, String username, String password, String firstName, String lastName, UserType userType,
+			List<Account> accounts) {
+		super();
+		this.id = id;
+		this.username = username;
+		this.password = password;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.userType = userType;
+		this.accounts = accounts;
+	}
+
+	public User() {
+		super();
+	}
+
+	public User(String username, String password, String firstName, String lastName, UserType userType) {
+		super();
+		this.username = username;
+		this.password = password;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.userType = userType;
+	}
+
+	public User(Integer id, String username, String password, String firstName, String lastName, UserType userType) {
+		super();
+		this.id = id;
+		this.username = username;
+		this.password = password;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.userType = userType;
+	}
+
 	
 }
