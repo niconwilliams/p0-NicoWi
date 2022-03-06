@@ -34,6 +34,6 @@ public class UserService {
 	 * @throws UsernameAlreadyExistsException if the given User's username is taken
 	 */
 	public void register(User newUser) {
-		
+		userDao.addUser(newUser);
 	}
 }
