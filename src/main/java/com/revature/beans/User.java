@@ -167,3 +167,10 @@ public class User implements Serializable {
 
 	
 }
+
+String inputUsername = username.getText();
+String inputPassword = password.getText();
+if(inputUserName.equals(userAdmin[0]) && inputPassword.equals(userAdmin[1])){
+  System.out.println("Welcome!" + username);
+}else if(inputUserName.equals(userAlexander [0]) && inputPassword.equals(userAlexander[1])){
+  System.out.println("Either your username and password is incorrect" + \n "Please try again");...
