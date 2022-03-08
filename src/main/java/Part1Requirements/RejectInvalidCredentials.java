@@ -72,3 +72,27 @@ public class users {
 
         }
 <pre>
+
+{
+do
+{
+    System.out.println("Enter \"login\", \"register\", or \"exit\"");
+    input = scanner.nextLine();
+    if (input.equals("login")
+    {
+        // get login details
+    }
+    else if (input.equals("register")
+    {
+        // get register details
+    }
+    else if (input.equals("exit")
+    {
+        break; // exit the loop
+    }
+    else
+    {
+        // invalid input, tell them to try again
+    }
+} while (true);	
+}
