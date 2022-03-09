@@ -28,33 +28,33 @@ import com.revature.dao.UserDao;
 import com.revature.dao.UserDaoFile;
 
 /**
- * These tests use the file DAO implementation to test the actual reading and writing 
- * of data to the file system.
+ * These tests use the file DAO implementation to test the actual reading and
+ * writing of data to the file system.
  */
 public class FileIntegrationTests extends PointWatcher {
-	
+
 	AccountDao adao = new AccountDaoFile();
 	UserDao udao = new UserDaoFile();
 	TransactionDao tdao = new TransactionDaoFile();
 	Account testAct = new Account();
 	User testUser = new User();
-	
+
 	@BeforeClass
 	public static void setupFileLocations() {
 		UserDaoFile.fileLocation = "target/integrationTests/users";
 		AccountDaoFile.fileLocation = "target/integrationTests/accounts";
 	}
-	
+
 	/*
 	 * ACCOUNT INTEGRATION TESTS
 	 */
-	
+
 	@Before
 	public void createTestAccountAndUser() {
 		testAct = new Account();
 		testAct.setId(1);
 		testAct.setOwnerId(1);
-		testAct.setType(AccountType.CHECKING);
+		testAct.setType(AccountType.CHECKING.toString());
 		testAct.setApproved(true);
 		testAct.setBalance(14.32);
 		adao.addAccount(testAct);
@@ -63,36 +63,36 @@ public class FileIntegrationTests extends PointWatcher {
 		testUser.setId(1);
 		testUser.setPassword("hello_world");
 		testUser.setUsername("testUser");
-		testUser.setUserType(UserType.CUSTOMER);
+		testUser.setUserType(UserType.CUSTOMER.toString());
 		udao.addUser(testUser);
 	}
-	
+
 	@After
 	public void tearDown() throws IOException {
 		Files.delete(Paths.get(AccountDaoFile.fileLocation));
 	}
-	
+
 	@Test
 	@Points(1)
 	public void testAddAndGetAccount() {
 		Account fromFile = adao.getAccount(1);
 		assertEquals(testAct, fromFile);
 	}
-	
+
 	@Test
 	@Points(1)
 	public void testGetAllAccounts() {
 		Account secondAccount = new Account();
 		secondAccount.setId(2);
 		secondAccount.setOwnerId(1);
-		secondAccount.setType(AccountType.SAVINGS);
+		secondAccount.setType(AccountType.SAVINGS.toString());
 		secondAccount.setApproved(false);
 		secondAccount.setBalance(32.10);
 		adao.addAccount(secondAccount);
 		List<Account> all = adao.getAccounts();
 		assertEquals(all.size(), 2);
 	}
-	
+
 	@Test
 	@Points(1)
 	public void testUpdateAccount() {
@@ -101,7 +101,7 @@ public class FileIntegrationTests extends PointWatcher {
 		Account updated = adao.updateAccount(testAct);
 		assertEquals(testAct, updated);
 	}
-	
+
 	@Test
 	@Points(1)
 	public void testDeleteAccount() {
@@ -112,21 +112,21 @@ public class FileIntegrationTests extends PointWatcher {
 			fail("Unable to delete account");
 		}
 	}
-	
+
 	@Test
 	@Points(1)
 	public void testGetAccountsByUser() {
 		Account newAccount = new Account();
 		newAccount.setId(1);
 		newAccount.setOwnerId(1);
-		newAccount.setType(AccountType.CHECKING);
+		newAccount.setType(AccountType.CHECKING.toString());
 		newAccount.setApproved(true);
 		newAccount.setBalance(14.32);
 		adao.addAccount(newAccount);
 		Account secondAccount = new Account();
 		secondAccount.setId(2);
 		secondAccount.setOwnerId(2);
-		secondAccount.setType(AccountType.SAVINGS);
+		secondAccount.setType(AccountType.SAVINGS.toString());
 		secondAccount.setApproved(false);
 		secondAccount.setBalance(32.10);
 		adao.addAccount(secondAccount);
@@ -137,18 +137,18 @@ public class FileIntegrationTests extends PointWatcher {
 		assertEquals(test.size(), 1);
 		assertEquals(secondAccount, test.get(0));
 	}
-	
+
 	/*
 	 * USER INTEGRATION TESTS
 	 */
-	
+
 	@Test
 	@Points(1)
 	public void testAddAndGetUser() {
 		User actual = udao.getUser(testUser.getId());
 		assertEquals(testUser, actual);
 	}
-	
+
 	@Test
 	@Points(1)
 	public void testGetAllUsers() {
@@ -160,7 +160,7 @@ public class FileIntegrationTests extends PointWatcher {
 		List<User> allUsers = udao.getAllUsers();
 		assertEquals(allUsers.size(), 2);
 	}
-	
+
 	@Test
 	@Points(1)
 	public void testUpdateUser() {
@@ -168,7 +168,7 @@ public class FileIntegrationTests extends PointWatcher {
 		udao.updateUser(testUser);
 		assertEquals(udao.getUser(testUser.getId()).getFirstName(), "Charlie");
 	}
-	
+
 	@Test
 	@Points(1)
 	public void testDeleteUser() {
@@ -179,7 +179,7 @@ public class FileIntegrationTests extends PointWatcher {
 			fail("Unable to delete account");
 		}
 	}
-	
+
 	/*
 	 * TRANSACTION INTEGRATION TESTS
 	 */

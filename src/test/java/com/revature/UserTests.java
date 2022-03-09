@@ -84,8 +84,8 @@ public class UserTests extends PointWatcher {
 	public void testInvalidRegistration() {
 		// try registration with same username - this should fail
 		User anotherUser = new User();
-		anotherUser.setUsername("testuser");
-		anotherUser.setPassword("testpassword");
+		anotherUser.setUsername("testuser1");
+		anotherUser.setPassword("testpassword1");
 		userSrv.register(anotherUser);
 	}
 	
