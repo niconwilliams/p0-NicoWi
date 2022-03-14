@@ -1,6 +1,8 @@
 package com.revature.utils;
 
 import java.io.FileInputStream;
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,7 +16,7 @@ public class ConnectionUtil {
 	private static ConnectionUtil cu = null;
 	private static Properties prop;
 	private static Connection conn;
-	private static String url = null;// = "jdbc:mysql://localhost:3306/p0";
+	private static final String url ="jdbc:mysql://localhost:3306/Revature";
 	private static String username = null;
 	private static String password = null;
 
@@ -23,6 +25,18 @@ public class ConnectionUtil {
 	 * into the Properties variable
 	 */
 	private ConnectionUtil() {
+		Properties properties = new Properties();
+        try {
+            FileInputStream fileStream = new FileInputStream(".\\src\\main\\resources\\database.properties"); 
+            properties.load(fileStream);
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+       
 		
 	}
 
@@ -39,19 +53,10 @@ public class ConnectionUtil {
 	 */
 	public static Connection getConnection() {
 		// Hint: use the Properties variable to setup your Connection object
-		Properties properties = new Properties();
-		try {
-			FileInputStream fileStream = new FileInputStream("src/main/resources/database.properties");
-			properties.load(fileStream);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		url = properties.getProperty("url");
-		password = properties.getProperty("pswd");
-		username = properties.getProperty("usr");
-		try {
-			conn = DriverManager.getConnection(url, username, password);
+	
+		try { 
+			getConnectionUtil();
+			conn = DriverManager.getConnection(url, "root", "root123");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

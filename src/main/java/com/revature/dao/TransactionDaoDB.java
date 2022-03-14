@@ -19,7 +19,8 @@ public class TransactionDaoDB implements TransactionDao {
 	private static Statement stmt;
 	private static PreparedStatement pstmt;
 	private static ResultSet rs;
-
+	
+	
 	public TransactionDaoDB() {
 		conn = ConnectionUtil.getConnection();
 	}
@@ -27,7 +28,7 @@ public class TransactionDaoDB implements TransactionDao {
 	public List<Transaction> getAllTransactions() {
 		// TODO Auto-generated method stub
 		List<Transaction> transactionList = new ArrayList<Transaction>();
-		String query = "select * from transaction";
+		String query = "select * from transactions where id=" ;
 		try {
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery(query);

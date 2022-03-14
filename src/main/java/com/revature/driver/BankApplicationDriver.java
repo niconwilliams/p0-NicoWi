@@ -1,50 +1,23 @@
 package com.revature.driver;
 
+import java.time.LocalDateTime;
+
+
 import java.util.ArrayList;
-
-
-
-
-import java.lang.NullPointerException;
 import java.util.List;
 import java.util.Scanner;
-import com.revature.services.AccountService;
-import com.revature.services.UserService;
+
 import com.revature.beans.Account;
 import com.revature.beans.Account.AccountType;
 import com.revature.beans.User;
 import com.revature.beans.User.UserType;
-import com.revature.beans.Account;
-import com.revature.beans.Account.AccountType;
-import com.revature.beans.User;
-import com.revature.beans.User.UserType;
-import com.revature.dao.AccountDao;
-import com.revature.dao.AccountDaoDB;
-import com.revature.dao.TransactionDao;
-import com.revature.dao.TransactionDaoDB;
-import com.revature.dao.UserDao;
-import com.revature.dao.UserDaoDB;
-import com.revature.exceptions.InvalidCredentialsException;
-import com.revature.exceptions.OverdraftException;
-import com.revature.exceptions.UnauthorizedException;
-import com.revature.exceptions.UsernameAlreadyExistsException;
-import com.revature.services.AccountService;
-import com.revature.services.UserService;
-import com.revature.utils.SessionCache;
 import com.revature.dao.AccountDao;
 import com.revature.dao.AccountDaoDB;
 import com.revature.dao.UserDao;
 import com.revature.dao.UserDaoDB;
 import com.revature.dao.UserDaoFile;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.File;
-
+import com.revature.services.AccountService;
+import com.revature.services.UserService;
 import com.revature.utils.SessionCache;
 
 
@@ -60,8 +33,18 @@ public class BankApplicationDriver {
 	
 			
 public static void main(String[] args) {
+	BankApplicationDriver newDriver = new BankApplicationDriver();
+	
+	newDriver.showMenu(); 
+}
+
+	// TODO Auto-generated method stub
 	
 	
+	
+
+		static boolean logged = false;
+		static boolean showMenu = false;
 		int choice = 0;
 		int id = 0;
 		Scanner input = new Scanner(System.in);
@@ -80,8 +63,13 @@ public static void main(String[] args) {
 			System.out.println('\n'+"...................................................................................");
 		}
 		
-	
+
+
+	public void showMenu() {
+		
+	 showMenu = true;
 while (choice < 6) {
+	
 	BankApplicationDriver.printLine();
 	System.out.println("...... \t\t\t\t\t\t\t\t\t\t ......");
 	System.out.println("...... \t\t\t\t\t\t\t\t\t\t ......");
@@ -98,6 +86,7 @@ while (choice < 6) {
 	System.out.println("\n ...................\n 6. Exit Now");
 	System.out.print("\n............Choose an option here! [1-6] :");
 	choice = input.nextInt();
+	
 
 	switch (choice) {
 	case 1:
@@ -111,16 +100,21 @@ while (choice < 6) {
 		System.out.print("Enter Password :");
 		password = input.next();
 
-		User user = new User(id++, username, password, fName, lName, UserType.CUSTOMER);
+		User user = new User( username, password, fName, lName, UserType.CUSTOMER);
 		userService.register(user);
 		break;
+	
+
+
 	case 2:
-		System.out.print("Enter Userame :");
+		
+		System.out.print("Enter Username :");
 		username = input.next();
 		System.out.print("Enter Password :");
 		password = input.next();
 		User loggedUser = userService.login(username, password);
 		System.out.println("logged user :" + loggedUser);
+		
 		if (loggedUser != null) {
 			System.out.println("Logged in Successfully!!!");
 			SessionCache.setCurrentUser(loggedUser);
@@ -130,17 +124,19 @@ while (choice < 6) {
 			double startingBalance = 0;
 
 			while (option <= 6) {
-				System.out.println(" 1.Apply Account ");
-				System.out.println(" 2.Deposit");
-				System.out.println("\t 3.Withdraw Funds");
-				System.out.println("\t\t 4.Fund Transfer ");
+				System.out.println("\t\t\t 1.Apply Account ");
+				System.out.println("\t\t\t 2.Deposit");
+				System.out.println("\t\t\t 3.Withdraw ");
+				System.out.println("\t\t\t 4.Fund Transfer ");
 				System.out.println("\t\t\t 5.Approve/Reject Account ");
-				System.out.println("...............\n\t\t\t 6.Logout ");
-				System.out.print("Enter your option [1-6]:");
+				System.out.println("\t\t\t 6.View Balance ");
+				System.out.println("\t\t\t 7.Logout ");
+				System.out.print("Enter your option [1-7]:");
 				option = input.nextInt();
+				
 				switch (option) {
 				case 1:
-					System.out.print("select an Account Type [1.Checking/2.Saving]: ");
+					System.out.print("select the Account Type [1.Checking/2.Saving]: ");
 					accountType = input.nextInt();
 					System.out.print("Enter Starting balance:");
 					startingBalance = input.nextDouble();
@@ -154,10 +150,10 @@ while (choice < 6) {
 					accountList.add(account);
 					loggedUser.setAccounts(accountList);
 					accountService.createNewAccount(loggedUser);
+					account.setBalance(account.getBalance() );
 					break;
 				case 2:
-					System.out.println("Available Accounts for this user");
-					accountService.getAccounts(loggedUser).forEach(System.out::println);
+					
 					System.out.print("Enter Account ID to Deposit :");
 					int accountId = 0;
 					accountId = input.nextInt();
@@ -166,27 +162,30 @@ while (choice < 6) {
 					amount = input.nextDouble();
 					account = accountDao.getAccount(accountId);
 					accountService.deposit(account, amount);
+					account.setBalance(account.getBalance() - amount);
+					System.out.println("Deposit Complete");
 					break;
 				case 3:
-					System.out.println("Available Accounts ");
-					accountService.getAccounts(loggedUser).forEach(System.out::println);
+					
 					System.out.print("Enter Account ID to Withdraw :");
 					accountId = 0;
 					accountId = input.nextInt();
-					System.out.print("How much would you like to withdraw :");
+					
+					System.out.print("Enter the amount to withdraw :");
 					amount = 0;
 					amount = input.nextDouble();
 					account = accountDao.getAccount(accountId);
 					accountService.withdraw(account, amount);
+					System.out.println("Withdrawal Complete");
+					
 					break;
 				case 4:
-					System.out.println("Available Accounts for this user");
-					accountService.getAccounts(loggedUser).forEach(System.out::println);
+					
 					accountId = 0;
-					System.out.print("Enter client Id for Transfer of Funds :");
+					System.out.print("Enter From Account ID to Transfer Fund :");
 					accountId = input.nextInt();
 					int toAccountId = 0;
-					System.out.print("Enter Account ID for Transfer of Funds :");
+					System.out.print("Enter To Account ID to Transfer Fund :");
 					toAccountId = input.nextInt();
 					amount = 0;
 					System.out.print("Enter the amount to transfer :");
@@ -194,16 +193,96 @@ while (choice < 6) {
 					Account fromAccount = accountDao.getAccount(accountId);
 					Account toAccount = accountDao.getAccount(toAccountId);
 					accountService.transfer(fromAccount, toAccount, amount);
+					System.out.println("Transfer Complete");
 					break;
-				case 5:
-					break;
-				case 6:
-					System.out.print("Would you like to Logout? (1.Yes/2.No) :");
+//				
+				case 5: // Approving / Rejecting Accounts
+					
+					
+					
+					
+                    System.out.println("Approving / Rejecting Accounts");
+                    System.out.println();
+                    System.out.println("1 - Approved");
+                    System.out.println("2 - Reject");
+                   
+
+                    choice = input.nextInt();
+                
+                    switch (choice) {
+
+                    // ----APPROVE ACCOUNT
+                    case 1:
+                    	if (user.getUserType() == UserType.EMPLOYEE) {
+                            System.out.println("Available accounts for all users");
+
+                            accountDao.getAccounts().forEach(System.out::println);
+                            System.out.print("Enter account ID to approve or reject: ");
+                            accountId = 0;
+                            accountId = input.nextInt();
+                            System.out.print("Select an option [true for approve, false for reject]: ");
+                            boolean optionAR = false;
+                            optionAR = input.nextBoolean();
+                            account = accountDao.getAccount(accountId);
+                            accountService.approveOrRejectAccount(account, optionAR);
+                            accountDao.updateAccount(account);
+                        }
+                        else {
+                            System.out.println("Only employees can approve or reject transactions.");
+                        }
+                        System.out.println("Enter account ID:");
+                        accountId = input.nextInt();
+                        account = accountDao.getAccount(accountId);
+                        account.setApproved(true);
+                        System.out.println(account);
+                    	
+    				
+    					
+    					break;
+    					
+    				
+                     
+
+                    // ----REJECT ACCOUNT
+                    case 2:
+                        System.out.println("Enter account ID:");
+                        accountId = input.nextInt();
+                        account = accountDao.getAccount(accountId);
+                        account.setApproved(false);
+                        System.out.println(account);
+                        System.out.println("Rejected Transaction");
+                        break;
+                       
+    				default:
+    					System.out.println("Enter a number between 1 to 6");
+    					break;
+    				}
+                    
+              
+				case 6: // View Balance
+
+                    System.out.println("View Balance");
+                    System.out.println("Enter account ID");
+                    System.out.println();
+
+                    int balance = input.nextInt();
+                    account = accountDao.getAccount(balance);
+                    System.out.println(account);
+                    break;	
+				case 7:
+					System.out.print("Do you want to Logout? (1.Yes/2.No) :");
 					int logout = 0;
 					logout = input.nextInt();
 					if (logout == 1) {
 						SessionCache.setCurrentUser(null);
+						System.out.println("Algorithm Bank Thanks You! ");
+						showMenu();
+						
+						
+						
+						break;
 					}
+					
 					break;
 				default:
 					System.out.println("Enter a number between 1 to 6");
@@ -213,6 +292,8 @@ while (choice < 6) {
 			}
 		}
 		break;
+
+	
 	case 3:
 		userDao.getAllUsers().forEach(System.out::println);
 		break;
@@ -239,22 +320,26 @@ while (choice < 6) {
 		userDao.updateUser(updatedUser);
 		break;
 	case 6:
+		showMenu();
 		System.out.println("Algorithm Bank Thanks You! ");
-		System.exit(0);
+		
+		
 		break;
-
+		
 	default:
 		break;
+		
 	}
 
 }
 
+
 input.close();
-}
+
 
 }
 
-			
+
+}
+
 		
- 
-			

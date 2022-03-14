@@ -1,9 +1,12 @@
 package com.revature.services;
 
 import java.util.ArrayList;
+
 import java.util.List;
 
 import com.revature.beans.Account;
+import com.revature.beans.Transaction;
+import com.revature.beans.Transaction.TransactionType;
 import com.revature.beans.User;
 import com.revature.dao.AccountDao;
 import com.revature.exceptions.OverdraftException;
@@ -28,8 +31,31 @@ public class AccountService {
 	 *                                       balance
 	 * @throws UnsupportedOperationException if amount is negative
 	 */
-	public void withdraw(Account a, Double amount) {
-
+	public void deposit(Account a, Double amount) {
+		if (!a.isApproved()) {
+			a.setBalance(STARTING_BALANCE + amount);
+		}
+		
+		if (amount < 0) {
+			throw new UnsupportedOperationException();
+		} else {
+			Double balance = a.getBalance();
+			a.setBalance(balance + amount);
+			
+			Transaction t = new Transaction();
+			t.setType(TransactionType.DEPOSIT);
+			t.setAmount(amount);
+			t.setTimestamp();
+			
+			List<Transaction> transactions = new ArrayList<Transaction>();
+			if (a.getTransactions() != null) {
+				transactions = a.getTransactions();
+			}
+			transactions.add(t);
+			
+			a.setTransactions(transactions);
+			actDao.updateAccount(a);
+		}
 	}
 
 	/**
@@ -37,12 +63,46 @@ public class AccountService {
 	 * 
 	 * @throws UnsupportedOperationException if amount is negative
 	 */
-	public void deposit(Account a, Double amount) {
+	public void withdraw(Account a, Double amount) {
 		if (!a.isApproved()) {
 			throw new UnsupportedOperationException();
 		}
+		
+		if (amount < 0) {
+			throw new UnsupportedOperationException();
+		} else {
+			Double balance = a.getBalance();
+			if (balance > amount) {
+				a.setBalance(balance - amount);
+				
+				Transaction t = new Transaction();
+				t.setType(TransactionType.WITHDRAWAL);
+				t.setAmount(amount);
+				t.setTimestamp();
+				
+				List<Transaction> transactions = new ArrayList<Transaction>();
+				
+				if (a.getTransactions() != null) {
+					transactions = a.getTransactions();
+				}
+				transactions.add(t);
+				
+				a.setTransactions(transactions);
+				actDao.updateAccount(a);
+				
+			} else {
+				System.out.println("Insufficient Funds");
+				throw new OverdraftException();
+				
+			}
+		}
 	}
-
+	
+	/**
+	 * Deposit funds to an account
+	 * @throws UnsupportedOperationException if amount is negative
+	 */
+	
 	/**
 	 * Transfers funds between accounts
 	 * 
@@ -77,7 +137,7 @@ public class AccountService {
 	 * @return true if account is approved, or false if unapproved
 	 */
 	public boolean approveOrRejectAccount(Account a, boolean approval) {
-		return false;
+		return true;
 	}
 
 	public List<Account> getAccounts(User u) {

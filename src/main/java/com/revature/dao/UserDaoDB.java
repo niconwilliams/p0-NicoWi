@@ -1,6 +1,8 @@
 package com.revature.dao;
 
 import java.net.PasswordAuthentication;
+
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -39,8 +41,7 @@ public class UserDaoDB implements UserDao {
 			pstmt.setString(4, user.getPassword());
 			pstmt.setObject(5, user.getUserType().toString());
 			status = pstmt.executeUpdate();
-			if (status > 0)
-				System.out.println("User Successfully Registered. Please Login to continue!!!");
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -124,7 +125,7 @@ public class UserDaoDB implements UserDao {
 
 	public User updateUser(User u) {
 		// TODO Auto-generated method stub
-		String query = "update p0_user set first_name=?, last_name=?, username=?, password=?, user_type=? where id = ?";
+		String query = "update p0_user set first_name=?, last_name=?, username=?, password=?, user_type=? where account_id = ?";
 		try {
 			pstmt = conn.prepareStatement(query);
 

@@ -1,9 +1,14 @@
 package com.revature.dao;
 
+import java.sql.SQLException;
+
 import java.util.List;
 
 import com.revature.beans.Account;
 import com.revature.beans.User;
+
+
+
 
 /**
  * The data access object interface for CRUD operations on Accounts.
@@ -44,7 +49,7 @@ public interface AccountDao {
 	 * @return the updated account
 	 */
 	public Account updateAccount(Account a);
-	
+
 	/**
 	 * Deletes an account from the persistence layer
 	 * @param a the account to delete

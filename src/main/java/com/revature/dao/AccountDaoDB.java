@@ -102,8 +102,11 @@ public class AccountDaoDB implements AccountDao {
 		try {
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery(query);
+			
 			while (rs.next()) {
+				
 				Account a = new Account();
+				
 				a.setId(rs.getInt("id"));
 				a.setOwnerId(rs.getInt("owner_id"));
 				a.setBalance(rs.getDouble("balance"));
@@ -120,13 +123,25 @@ public class AccountDaoDB implements AccountDao {
 	}
 
 	public Account updateAccount(Account a) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+        // TODO Auto-generated method stub
+        String query = "update account set owner_id=?, balance=?, account_type=?, approved=? where id=?";
+        try {
+            pstmt = conn.prepareStatement(query);
+            pstmt.setInt(1, a.getOwnerId());
+            pstmt.setDouble(2, a.getBalance());
+            pstmt.setObject(3, a.getType().toString());
+            pstmt.setBoolean(4, a.isApproved());
+            pstmt.setInt(5, a.getId());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return a;
+    }
 
 	public boolean removeAccount(Account a) {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
 }
